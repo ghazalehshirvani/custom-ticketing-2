@@ -3,6 +3,8 @@ import { tokens } from "../../theme";
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
 import Header from "../../components/header";
 import CircularProgress from "@mui/joy/CircularProgress";
+import {styled} from "@mui/material/styles";
+
 
 import TrafficIcon from "@mui/icons-material/Traffic";
 import "./dashboard.css";
@@ -10,6 +12,8 @@ import { mockTransactions } from "../../data/mockData";
 
 import * as React from 'react';
 import { BarChart } from '@mui/x-charts/BarChart';
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const chartSetting = {
   xAxis: [
@@ -113,6 +117,19 @@ const Dashboard = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const date = new Date();
+    if (!localStorage.getItem("accessToken")) {
+      navigate("/login");
+    }
+    if (date.getTime() > localStorage.getItem("tokenExpiration")) {
+      localStorage.clear("accessToken");
+      navigate("/login");
+    }
+  }, [localStorage]);
+  
   return (
     <Box className="headerContainer">
       {/* HEADER */}
@@ -142,28 +159,9 @@ const Dashboard = () => {
           },
         }}
       >
-        <Box
-          gridColumn="span 1"
-          gridRow="span 2"
-          minWidth="600px"
-          backgroundColor={colors.primary[1000]}
-          overflow="auto"
-          marginLeft="10px"
-        >
-          <Box
-            gridColumn="span 1"
-            gridRow="span 2"
-            backgroundColor={colors.primary[1000]}
-            overflow="auto"
-          >
-            <Box
-              display="flex"
-              justifyContent="space-between"
-              alignItems="center"
-              borderBottom={`4px solid ${colors.primary[500]}`}
-              colors={colors.grey[100]}
-              overflow="auto"
-            >
+        <Box className="recentTicketParentBox" backgroundColor={colors.primary[1000]}>
+          <Box className="recentTicketBox2"  backgroundColor={colors.primary[1000]}>
+            <Box className="recentTicketBox2"   borderBottom= {`4px solid ${colors.primary[500]}`} colors= {colors.grey[100]}>
               <Typography
                 color={colors.grey[100]}
                 variant="h5"
@@ -226,7 +224,7 @@ const Dashboard = () => {
           >
             <div>
               <div marginRight="100px">
-                <CircularProgress determinate value={75} />
+                <CircularProgress />
               </div>
               <div>
                 <Typography

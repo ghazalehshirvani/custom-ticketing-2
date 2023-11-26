@@ -51,3 +51,24 @@
     grid-auto-rows: 140px;
     gap: 20px 0px;
 }
+.recentTicketParentBox{
+    grid-column: span 1;
+    grid-row: span 2;
+    min-width: 600px;
+    overflow: auto;
+    margin-left: 10px;
+  
+}
+.recentTicketBox2{
+    grid-column:"span 1";
+    grid-row:"span 2";
+    overflow: auto;
+   
+}
+.recentTicketBox3{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    overflow: auto;
+  
+}

@@ -7,11 +7,9 @@ import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import {  FetchUserProfile } from "../api/axios";
+import { userProfileURL } from "../api/axios";
 
-const Item = ({ title, to, icon, selected, setSelected }) => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
+const Item = ({ title, to, icon, selected, setSelected , colors, onClick }) => {
 
 
   return (
@@ -21,31 +19,56 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
         color: colors.grey[100],
         direction: "right",
       }}
-      onClick={() => setSelected(title)}
+      onClick={() => {
+        onClick && onClick()
+        setSelected(title)}
+      }
       icon={icon}
     >
-      <Typography sx={{ marginRight: "10px", fontWeight: "bold" }}>
-        {title}
-      </Typography>
-      <Link to={to} />
+      <Link to={to}>
+        <Typography sx={{ marginRight: "10px", fontWeight: "bold" }}>
+          {title}
+        </Typography>
+      </Link>
     </MenuItem>
   );
 };
 
 const CustomSidebar = () => {
+  
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
 
-  FetchUserProfile();
-  try{
-    const userProfile = FetchUserProfile();
-    console.log(userProfile.name);
-  } catch{
-    console.log("Error Fetching User Profile");
-  }
- 
+  const [profile, setProfile] = useState({});
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(userProfileURL, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: localStorage.getItem("accessToken"),
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(
+            `Failed to fetch User Profile: ${response.statusText}`
+          );
+        }
+        const data = await response.json();
+        setProfile(data[0]);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <Box
@@ -115,11 +138,11 @@ const CustomSidebar = () => {
                   fontWeight="bold"
                   sx={{ m: "10px 0 20px 0" }}
                 >
-                 userProfile.name
+                  {profile.name}
                 </Typography>
                 <Typography variant="h4" color={colors.grey[200]}>
                   {/* {""#2A2E36"}> "} */}
-                   userProfile.job_position
+                  {profile.job_position}
                 </Typography>
               </Box>
             </Box>
@@ -135,6 +158,7 @@ const CustomSidebar = () => {
               icon={<HomeOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
+              colors={colors}
             />
             <Item
               title="ثبت تیکت"
@@ -142,6 +166,7 @@ const CustomSidebar = () => {
               icon={<PersonOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
+              colors={colors}
             />
             <Item
               title="پایگاه دانش"
@@ -149,6 +174,17 @@ const CustomSidebar = () => {
               icon={<HelpOutlineOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
+              colors={colors}
+            />
+            <Item
+              title="خروج "
+              to="/login"
+              icon={<HelpOutlineOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+              colors={colors}
+              onClick={()=> localStorage.clear("accessToken")
+              }
             />
           </Box>
         </Menu>
