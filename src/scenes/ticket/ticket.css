@@ -1,0 +1,18 @@
+.ql-container,.ql-editor p {
+    direction:rtl;
+    text-align:right;
+}
+
+.ql-editor,.ql-editor.ql-blank::before {
+    right: 10px;
+    direction: rtl;
+    text-align: right;
+}
+
+.ql-editor {
+    min-height: 200px;
+}
+.ql-container{
+    margin: "10px";
+    
+}
