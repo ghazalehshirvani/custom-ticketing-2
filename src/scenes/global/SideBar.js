@@ -9,6 +9,8 @@ import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import { userProfileURL } from "../api/axios";
 
+
+
 const Item = ({ title, to, icon, selected, setSelected , colors, onClick }) => {
 
 
@@ -40,8 +42,8 @@ const CustomSidebar = () => {
   const colors = tokens(theme.palette.mode);
 
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [selected, setSelected] = useState("Dashboard");
 
+  const [selected, setSelected] = useState("Dashboard");
   const [profile, setProfile] = useState({});
 
   useEffect(() => {
@@ -57,7 +59,7 @@ const CustomSidebar = () => {
 
         if (!response.ok) {
           throw new Error(
-            `Failed to fetch User Profile: ${response.statusText}`
+            `Failed to fetch User Profile: ${response.statusText} ${localStorage.getItem("accessToken")}`
           );
         }
         const data = await response.json();
@@ -68,7 +70,7 @@ const CustomSidebar = () => {
     };
 
     fetchData();
-  }, []);
+  }, [localStorage]);
 
   return (
     <Box

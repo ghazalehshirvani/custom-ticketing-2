@@ -35,7 +35,7 @@ const Login = () => {
     try {
       data = new FormData(event.currentTarget);
       console.log({
-        email: data.get("email"),
+        email: data.get("username"),
         password: data.get("password"),
       });
 
@@ -53,7 +53,7 @@ const Login = () => {
 
       if (response.ok) {
         const result = await response.json();
-        const accessToken = result.token;
+        const accessToken = "Token "+result.token;
         setAuthToken(accessToken);
         localStorage.setItem("accessToken", accessToken);
         // Calculate expiration time (e.g., 1 hour from now)
