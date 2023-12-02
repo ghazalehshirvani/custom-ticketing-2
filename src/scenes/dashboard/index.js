@@ -64,7 +64,7 @@ const Dashboard = () => {
 
     fetchTicketCount();
   }, []);
-  
+
   useEffect(() => {
     const fetchRecentTicket = async () => {
       try {
@@ -167,8 +167,8 @@ const Dashboard = () => {
               >
                 <Header title="تیکت های اخیر" />
                 <Box
-                  m="40px 0 0 0"
-                  height="75vh"
+                  m="40px 10 0 0"
+                  height="60vh"
                   sx={{
                     "& .MuiDataGrid-root": {
                       border: "none",
@@ -184,7 +184,7 @@ const Dashboard = () => {
                       borderBottom: "none",
                     },
                     "& .MuiDataGrid-virtualScroller": {
-                      backgroundColor: colors.primary[1000],
+                      backgroundColor: colors.grey[900],
                     },
                     "& .MuiDataGrid-footerContainer": {
                       borderTop: "none",

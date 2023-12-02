@@ -9,7 +9,7 @@ const DepartmentList = () => {
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        // Replace 'YOUR_API_ENDPOINT' with the actual endpoint to fetch departments
+ 
         const response = await fetch(departmentURL, {
           method: 'GET',
           headers: {
@@ -32,7 +32,7 @@ const DepartmentList = () => {
     };
 
     fetchDepartments();
-  }, []); // Empty dependency array means this effect runs once on mount
+  }, []); 
 
   return (
     <div>

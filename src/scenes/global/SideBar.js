@@ -87,10 +87,10 @@ const CustomSidebar = () => {
           padding: "20px 20px 20px 10px !important",
         },
         "& .pro-inner-item:hover": {
-          color: "#868dfb !important",
+          color: "#929292 !important",
         },
         "& .pro-menu-item.active": {
-          color: "#6870fa !important",
+          color: "#555 !important",//#6870fa
         },
         ".pro-sidebar": {
           position: "relative",
@@ -98,7 +98,29 @@ const CustomSidebar = () => {
         },
       }}
     >
-      <Sidebar collapsed={isCollapsed}>
+      <Sidebar collapsed={isCollapsed}
+      rootStyles={{
+        
+        "& .pro-sidebar-inner": {
+          background: `${colors.primary[1000]} !important`,
+        },
+        "& .pro-icon-wrapper": {
+          backgroundColor: "transparent !important",
+        },
+        "& .pro-inner-item": {
+          padding: "20px 20px 20px 10px !important",
+        },
+        "& .pro-inner-item:hover": {
+          color: "#929292 !important",
+        },
+        "& .pro-menu-item.active": {
+          color: "#6870fa !important",
+        },
+        ".pro-sidebar": {
+          position: "relative",
+          height: "window.innerHeight",
+        },}}
+        >
         <Menu iconShape="square">
           {/* LOGO AND MENU ICON */}
           <MenuItem

@@ -90,8 +90,8 @@ export const mockDataContacts = [
   {
     id: 2,
     name: "غلام درویشی",
-    email: "qolam@gmail.com",
-    age: 42,
+    job_position: "(فناوری اطلاعات) امنیت - سرپرست",
+    pic_profile: "http://127.0.0.1:8000/media/profile_pics/images.jpg",
     phone: "09264544256",
     address: "جاده تهران، کوچه ۵",
     city: "رفسنجان",
