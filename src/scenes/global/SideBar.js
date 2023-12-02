@@ -7,37 +7,37 @@ import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
+import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
+
 import { userProfileURL } from "../api/axios";
 
-
-
-const Item = ({ title, to, icon, selected, setSelected , colors, onClick }) => {
-
-
+const Item = ({ title, to, icon, selected, setSelected, colors, onClick }) => {
   return (
-    <MenuItem
-      active={selected === title}
-      style={{
-        color: colors.grey[100],
-        direction: "right",
-      }}
-      onClick={() => {
-        onClick && onClick()
-        setSelected(title)}
-      }
-      icon={icon}
-    >
-      <Link to={to}>
+    <Link to={to}>
+      <>
+      <MenuItem
+        active={selected === title}
+        style={{
+          color: colors.grey[100],
+          direction: "right",
+        }}
+        onClick={() => {
+          onClick && onClick();
+          setSelected(title);
+        }}
+        icon={icon}
+      >
+        
         <Typography sx={{ marginRight: "10px", fontWeight: "bold" }}>
           {title}
         </Typography>
-      </Link>
-    </MenuItem>
+      </MenuItem>
+      </>
+    </Link>
   );
 };
 
 const CustomSidebar = () => {
-  
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -59,7 +59,9 @@ const CustomSidebar = () => {
 
         if (!response.ok) {
           throw new Error(
-            `Failed to fetch User Profile: ${response.statusText} ${localStorage.getItem("accessToken")}`
+            `Failed to fetch User Profile: ${
+              response.statusText
+            } ${localStorage.getItem("accessToken")}`
           );
         }
         const data = await response.json();
@@ -171,6 +173,14 @@ const CustomSidebar = () => {
               colors={colors}
             />
             <Item
+              title="اطلاعات کارمندان"
+              to="/contacts"
+              icon={<ContactsOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+              colors={colors}
+            />
+            <Item
               title="پایگاه دانش"
               to="/faq"
               icon={<HelpOutlineOutlinedIcon />}
@@ -185,8 +195,7 @@ const CustomSidebar = () => {
               selected={selected}
               setSelected={setSelected}
               colors={colors}
-              onClick={()=> localStorage.clear("accessToken")
-              }
+              onClick={() => localStorage.clear("accessToken")}
             />
           </Box>
         </Menu>

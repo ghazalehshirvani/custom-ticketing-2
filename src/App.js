@@ -8,7 +8,9 @@ import { useEffect, useState } from "react";
 import Login from "./scenes/login";
 import Dashboard from "./scenes/dashboard";
 import Ticket from "./scenes/ticket";
+import Contacts from "./scenes/contacts";
 import { Routes, Route } from "react-router-dom";
+
 
 import FAQ from "./scenes/faq";
 
@@ -40,6 +42,7 @@ function App() {
             <Route path="/ticket" element={<Ticket />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/contacts" element={< Contacts />} />
           </Routes>
         </main>
       </div>

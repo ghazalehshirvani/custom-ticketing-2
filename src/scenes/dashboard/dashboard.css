@@ -47,17 +47,15 @@
 }
 .parentBox{
     display: grid;
-    grid-template-columns: 2fr 1fr; /* Two equal-width columns */
-    grid-auto-rows: 140px;
+    grid-template-columns: 2fr 2fr; /* Two equal-width columns */
+    grid-auto-rows: 150px;
     gap: 20px 0px;
 }
 .recentTicketParentBox{
-    grid-column: span 1;
+    grid-column: span 2;
     grid-row: span 2;
     min-width: 600px;
     overflow: auto;
-    margin-left: 10px;
-  
 }
 .recentTicketBox2{
     grid-column:"span 1";
