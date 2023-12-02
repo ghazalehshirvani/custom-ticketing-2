@@ -2,9 +2,7 @@ import { Box, Button, IconButton, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
 import Header from "../../components/header";
-// import CircularProgress from "@mui/joy/CircularProgress";
-// import {styled} from "@mui/material/styles";
-
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 
@@ -66,6 +64,7 @@ const Dashboard = () => {
 
     fetchTicketCount();
   }, []);
+  
   useEffect(() => {
     const fetchRecentTicket = async () => {
       try {
@@ -95,6 +94,36 @@ const Dashboard = () => {
     fetchRecentTicket();
   }, []);
 
+  const columns = [
+    { field: "id", headerName: "ID", flex: 0.5 },
+    {
+      field: "submitted_by",
+      headerName: "ارسال کننده",
+      flex: 1,
+      cellClassName: "name-column--cell",
+    },
+    {
+      field: "priority",
+      headerName: "اولویت",
+      headerAlign: "left",
+      align: "left",
+    },
+    {
+      field: "time_spent",
+      headerName: "زمان",
+      flex: 1,
+    },
+    {
+      field: "subject",
+      headerName: "موضوع",
+      flex: 1,
+    },
+    {
+      field: "description",
+      headerName: "توضیحات",
+      flex: 1,
+    },
+  ];
   return (
     <div className="pageContainer">
       <CustomSidebar isSidebar={isSidebar} texAlign="right" />
@@ -136,50 +165,45 @@ const Dashboard = () => {
                 className="recentTicketBox2"
                 backgroundColor={colors.primary[1000]}
               >
+                <Header title="تیکت های اخیر" />
                 <Box
-                  className="recentTicketBox2"
-                  borderBottom={`4px solid ${colors.primary[500]}`}
-                  colors={colors.grey[100]}
+                  m="40px 0 0 0"
+                  height="75vh"
+                  sx={{
+                    "& .MuiDataGrid-root": {
+                      border: "none",
+                    },
+                    "& .MuiDataGrid-cell": {
+                      borderBottom: "none",
+                    },
+                    "& .name-column--cell": {
+                      color: colors.greenAccent[300],
+                    },
+                    "& .MuiDataGrid-columnHeaders": {
+                      backgroundColor: colors.blueAccent[1000],
+                      borderBottom: "none",
+                    },
+                    "& .MuiDataGrid-virtualScroller": {
+                      backgroundColor: colors.primary[1000],
+                    },
+                    "& .MuiDataGrid-footerContainer": {
+                      borderTop: "none",
+                      backgroundColor: colors.blueAccent[1000],
+                    },
+                    "& .MuiCheckbox-root": {
+                      color: `${colors.greenAccent[200]} !important`,
+                    },
+                    "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
+                      color: `${colors.grey[500]} !important`,
+                    },
+                  }}
                 >
-                  <Typography
-                    color={colors.grey[100]}
-                    variant="h5"
-                    fontWeight="600"
-                  >
-                    تیکت ها اخیر
-                  </Typography>
+                  <DataGrid
+                    rows={recentTicket}
+                    columns={columns}
+                    components={{ Toolbar: GridToolbar }}
+                  />
                 </Box>
-                {recentTicket.map((ticket, i) => (
-                  <Box
-                    key={`${ticket.id}-${i}`}
-                    display="flex"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    borderBottom={`4px solid ${colors.primary[500]}`}
-                    overflow="auto"
-                    p="15px"
-                  >
-                    <Typography
-                      color={colors.blueAccent[1000]}
-                      variant="h5"
-                      fontWeight="600"
-                    >
-                      {ticket.submitted_by}
-                    </Typography>
-                    <Typography color={colors.grey[100]}>
-                      {ticket.priority}
-                    </Typography>
-
-                    <Box color={colors.grey[100]}>{ticket.time_spent}</Box>
-                    <Box
-                      backgroundColor={colors.blueAccent[1000]}
-                      p="5px 10px"
-                      borderRadius="4px"
-                    >
-                      {ticket.subject}
-                    </Box>
-                  </Box>
-                ))}
               </Box>
             </Box>
 
@@ -205,7 +229,7 @@ const Dashboard = () => {
               >
                 <div>
                   <div className="circularbar">
-                    <CircularProgressbar value={75} text={`${75}%`} />
+                    <CircularProgressbar value={50} text={`${50}%`} />
                   </div>
                   <div>
                     <Typography variant="h5" color="red" textAlign="center">

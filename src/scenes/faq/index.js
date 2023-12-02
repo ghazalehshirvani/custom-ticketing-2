@@ -10,12 +10,15 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import CustomSidebar from "../global/SideBar";
 import Topbar from "../global/TopBar";
+import { kbURL } from "../api/axios";
 
 const FAQ = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isSidebar, setIsSidebar] = useState(true);
-  
+  const [kbArray, setKbArray] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,6 +32,37 @@ const FAQ = () => {
     }
   }, [localStorage]);
 
+  useEffect(() => {
+    const fetchKB = async () => {
+      try {
+        const response = await fetch(kbURL, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: localStorage.getItem("accessToken"),
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch KB: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        setKbArray(data);
+        setLoading(false);
+      } catch (error) {
+        console.error(error);
+        setLoading(false);
+      }
+    };
+
+    fetchKB();
+  }, []);
+
+  const renderHTML = (htmlString) => {
+    return { __html: htmlString };
+  };
+
   return (
     <div className="pageContainer">
       <CustomSidebar isSidebar={isSidebar} texAlign="right" />
@@ -38,37 +72,30 @@ const FAQ = () => {
         <Box m="20px">
           <Header title="پایگاه دانش" subtitle="سوالات متداول" />
 
-          <Accordion defaultExpanded>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography color={colors.greenAccent[500]} variant="h5">
-                حل مشکل اتصال به ریموت دسکتاپ در ویندوز
-              </Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <Typography>
-                <span style={{ fontWeight: "bold" }}>۱. </span>تنظیمات فایروال
-                را تغییر دهید.
-                <br />
-                <br />
-                فایروال ویندوز یکی از رایج ترین دلایل مشکل اتصال به ریموت دسکتاپ
-                است و اگر فایروال سیستم شما RDP را بلاک کند، شما به هیچ وجه نمی
-                توانید به سیستم وریندوز ریموت متصل شوید. مخصوصاً اگر برای اولین
-                بار است که از ریموت دسکتاپ استفاده می کنید، حتماً باید مراحل این
-                روش را طی کنید چون ریموت دسکتاپ به طور پیش فرض در فایروال
-                غیرفعال است.
-              </Typography>
-            </AccordionDetails>
-          </Accordion>
-          <Accordion defaultExpanded>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography color={colors.greenAccent[500]} variant="h5">
-                سوال
-              </Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <Typography>راه حل</Typography>
-            </AccordionDetails>
-          </Accordion>
+          {kbArray.map((kb, i) => (
+            <Accordion key={i} defaultExpanded>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Box display="flex" flexDirection="column">
+                  <Typography color={colors.greenAccent[500]} variant="h5">
+                    {kb.title}
+                  </Typography>
+                  <Typography color={colors.blue[500]} variant="h6">
+                    {kb.author}
+                  </Typography>
+                </Box>
+              </AccordionSummary>
+              <AccordionDetails>
+                {kb.attachment&& (
+                  <img
+                    src={kb.attachment}
+                    alt="Attachment"
+                    style={{ maxWidth: "100%", maxHeight: "100%" }}
+                  />
+                )}
+                <Typography dangerouslySetInnerHTML={renderHTML(kb.content)} />
+              </AccordionDetails>
+            </Accordion>
+          ))}
         </Box>
       </div>
     </div>
