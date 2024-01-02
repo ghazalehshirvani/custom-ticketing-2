@@ -76,33 +76,13 @@ const CustomSidebar = () => {
 
   return (
     <Box
-      sx={{
-        "& .pro-sidebar-inner": {
-          background: `${colors.primary[1000]} !important`,
-        },
-        "& .pro-icon-wrapper": {
-          backgroundColor: "transparent !important",
-        },
-        "& .pro-inner-item": {
-          padding: "20px 20px 20px 10px !important",
-        },
-        "& .pro-inner-item:hover": {
-          color: "#929292 !important",
-        },
-        "& .pro-menu-item.active": {
-          color: "#555 !important",//#6870fa
-        },
-        ".pro-sidebar": {
-          position: "relative",
-          height: "window.innerHeight",
-        },
-      }}
+      
     >
       <Sidebar collapsed={isCollapsed}
       rootStyles={{
-        
+       
         "& .pro-sidebar-inner": {
-          background: `${colors.primary[1000]} !important`,
+          background: `${colors.primary[200]} !important`,
         },
         "& .pro-icon-wrapper": {
           backgroundColor: "transparent !important",
@@ -126,10 +106,17 @@ const CustomSidebar = () => {
           <MenuItem
             onClick={() => setIsCollapsed(!isCollapsed)}
             icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
-            style={{
-              margin: "10px 0 30px 0",
-              color: colors.grey[100],
-            }}
+            menuItemStyles={{
+              button: {
+                [`&.active`]: {
+                  backgroundColor: '#yellow',
+                  color: '#purple',
+                },
+              },}}
+              style={{
+                margin: "10px 0 30px 0",
+                color: colors.grey[100],
+              }}
           >
             {!isCollapsed && (
               <Box
@@ -159,14 +146,14 @@ const CustomSidebar = () => {
               </Box>
               <Box textAlign="center">
                 <Typography
-                  variant="h2"
+                  variant="h4"
                   color={colors.grey[100]}
                   fontWeight="bold"
                   sx={{ m: "10px 0 20px 0" }}
                 >
                   {profile.name}
                 </Typography>
-                <Typography variant="h4" color={colors.grey[200]}>
+                <Typography variant="h6" color={colors.grey[200]}>
                   {/* {""#2A2E36"}> "} */}
                   {profile.job_position}
                 </Typography>

@@ -76,3 +76,65 @@
  margin-right: 10px;
 
 }
+.gridBox{
+    grid-column: span 2;
+    grid-row: span 1;
+    min-width: 600px;
+}
+/* .gridContainer{
+    display: flex;
+    justify-content: space-between;
+    padding: 28;
+    margin: 20;
+    justify-items: flex-start;
+}
+.cardStyle{
+    background-color: #FF5733;
+    position: relative;
+} */
+
+.gridContainer {
+    display: flex;
+    justify-items: flex-start;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+  
+.cardStyle {
+    width: calc(33.33% - 20px);
+    margin: 10px;
+    position: relative;
+    color: red; 
+}
+@media (max-width: 600px) {
+    .cardStyle {
+      width: calc(100% - 20px);
+    }
+  }
+
+.cardStyle:hover {
+    cursor: pointer;
+    transform: scale(1.05);
+}
+  
+.cardContent {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+}
+  /* Add hover effect on the icons */
+.cardStyle:hover .iconStyle {
+    transform: scale(1.1);
+}
+  
+.iconStyle {
+    font-size: 60px;
+    color: white;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    transition: transform 0.3s ease-in-out;
+}

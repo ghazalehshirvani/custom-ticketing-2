@@ -12,25 +12,86 @@ import "./ticket.css";
 import { useNavigate } from "react-router-dom";
 import CustomSidebar from "../global/SideBar";
 import Topbar from "../global/TopBar";
-import { ticketURL } from '../api/axios'
+import { departmentListURL, sectionListURL, ticketURL } from "../api/axios";
 
 const Ticket = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
+  const [value, setValue] = useState("");
+  const [selectedDepartment, setSelectedDepartment] = useState("");
+
+  const [departmentList, setDepartmentList] = useState([]);
+  const [sectionList, setSectionList] = useState([]);
+
+  useEffect(() => {
+    try {
+      const response = fetch(departmentListURL, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: localStorage.getItem("accessToken"),
+        },
+      });
+      response.then((res) => {
+        console.log(res);
+        if (res.ok) {
+          const result = res.json();
+          result.then((data) => {
+            setDepartmentList(data);
+          });
+        } else {
+          console.error("department fetching failed");
+        }
+      });
+    } catch (error) {
+      console.error("Error during department fetching:", error);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (selectedDepartment) {
+      try {
+        const response = fetch(sectionListURL + selectedDepartment, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: localStorage.getItem("accessToken"),
+          },
+        });
+
+        response.then((res) => {
+          if (res.ok) {
+            const result = res.json();
+            result.then((data) => {
+              console.log(data);
+              setSectionList(data);
+            });
+          } else {
+            console.error("section fetching failed");
+          }
+        });
+      } catch (error) {
+        console.error("Error during section fetching:", error);
+      }
+    }
+  }, [selectedDepartment]);
 
   const handleFormSubmit = async (values) => {
-    console.log(values);
+
     try {
       const response = await fetch(ticketURL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: localStorage.getItem("accessToken"),
         },
         body: JSON.stringify({
           subject: values["subject"],
-          department: values["department"],
-          section: values["section"],
+          dep_id: selectedDepartment,
+          section_id: values["section"],
           priority: values["priority"],
-          explanation: values["explanation"],
+          description: value,
+          attachment: null,
+          user_ip: null,
         }),
       });
 
@@ -62,7 +123,6 @@ const Ticket = () => {
     }
   }, [localStorage]);
 
-  const [value, setValue] = useState("");
   return (
     <div className="pageContainer">
       <CustomSidebar isSidebar={isSidebar} texAlign="right" />
@@ -129,17 +189,20 @@ const Ticket = () => {
                       </InputLabel>
                       <Select
                         variant="filled"
-                        value={values.department}
-                        onChange={handleChange}
+                        value={selectedDepartment}
+                        onChange={(e) => setSelectedDepartment(e.target.value)}
                         name="department"
                         sx={{ width: "100%", direction: "rtl" }}
                       >
-                        <MenuItem value="IT" sx={{ direction: "rtl" }}>
-                          آی تی
-                        </MenuItem>
-                        <MenuItem value="Finance" sx={{ direction: "rtl" }}>
-                          مالی
-                        </MenuItem>
+                        {departmentList.map((department, i) => (
+                          <MenuItem
+                            key={i}
+                            value={department.id}
+                            sx={{ direction: "rtl" }}
+                          >
+                            {department.DepName}
+                          </MenuItem>
+                        ))}
                       </Select>
                     </Box>
                     <Box>
@@ -155,15 +218,15 @@ const Ticket = () => {
                         name="section"
                         sx={{ width: "100%", direction: "rtl" }}
                       >
-                        <MenuItem value="IT-Software" sx={{ direction: "rtl" }}>
-                          آی تی - نرم افزار
-                        </MenuItem>
-                        <MenuItem value="IT-Security" sx={{ direction: "rtl" }}>
-                          آی تی - امنیت
-                        </MenuItem>
-                        <MenuItem value="IT-Hardware" sx={{ direction: "rtl" }}>
-                          آی تی - سخت افزار
-                        </MenuItem>
+                        {sectionList.map((section, i) => (
+                          <MenuItem
+                            key={i}
+                            value={section.id}
+                            sx={{ direction: "rtl" }}
+                          >
+                            {section.SectionName}
+                          </MenuItem>
+                        ))}
                       </Select>
                     </Box>
 
@@ -196,14 +259,29 @@ const Ticket = () => {
 
                 <ReactQuill
                   theme="snow"
-                  value={value}
                   onChange={setValue}
+                  value={value}
                   placeholder="شرح مساله"
                 />
 
+                <Box mt="20px" display="flex">
+                <Button
+                  type="submit"
+                  color="secondary"
+                  variant="contained"
+                  sx={{
+                    fontSize: "h3",
+                    fontWeight: "bold",
+                    padding: "15px 20px",
+                  }}
+                >
+                  انتخاب فایل
+                </Button>
+                </Box>
+
                 <Box
                   display="flex"
-                  justifyContent="flex-end"
+                  justifyContent="space-between"
                   mt="20px"
                   flexDirection="row-reverse"
                 >
@@ -231,13 +309,11 @@ const Ticket = () => {
 
 const checkoutSchema = yup.object().shape({
   subject: yup.string().required("required"),
-  department: yup.string().required("required"),
   section: yup.string().required("required"),
   priority: yup.string().required("required"),
 });
 const initialValues = {
   subject: "",
-  department: "",
   section: "",
   priority: "",
 };

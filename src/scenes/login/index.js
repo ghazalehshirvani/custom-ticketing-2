@@ -14,8 +14,6 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useState } from "react";
 import { useTheme } from "@mui/material";
-
-// import { login } from './api/AuthProvider'; // Import the useAuth hook
 import { loginURL } from "../api/axios";
 import { tokens } from "../../theme";
 import { useNavigate } from "react-router-dom";
@@ -24,13 +22,27 @@ const Login = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
+  const date = new Date();
+  const [isChecked, setIsChecked] = useState(false);
+
+  const handleCheckboxChange = (event) => {
+    setIsChecked(event.target.checked);
+
+    // Add your function to be executed when the checkbox is checked
+    if (event.target.checked) {
+      if (date.getTime() > localStorage.getItem("tokenExpiration")) {
+        localStorage.setItem("tokenExpiration", date.getTime());
+      }
+      console.log("Checkbox is checked!");
+    }
+  };
+
   const [authToken, setAuthToken] = useState("");
   const navigate = useNavigate();
-  // const { login } = useAuth();
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     let data;
-    
 
     try {
       data = new FormData(event.currentTarget);
@@ -39,7 +51,6 @@ const Login = () => {
         password: data.get("password"),
       });
 
-      // Replace this with your actual API endpoint for login
       const response = await fetch(loginURL, {
         method: "POST",
         headers: {
@@ -53,15 +64,14 @@ const Login = () => {
 
       if (response.ok) {
         const result = await response.json();
-        const accessToken = "Token "+result.token;
+        const accessToken = "Token " + result.token;
         setAuthToken(accessToken);
         localStorage.setItem("accessToken", accessToken);
         // Calculate expiration time (e.g., 1 hour from now)
         const expirationTime = new Date().getTime() + 1 * 60 * 60 * 1000; // 1 hour
         localStorage.setItem("tokenExpiration", expirationTime);
         console.log("Token:", accessToken);
-        navigate("/")
-
+        navigate("/");
       } else {
         console.error("Login failed");
       }
@@ -117,9 +127,22 @@ const Login = () => {
               sx={{ direction: "rtl" }}
             />
             <FormControlLabel
-              control={<Checkbox value="remember" color="primary" sx={{marginRight: "0"}}/>}
+              control={
+                <Checkbox
+                  value="remember"
+                  color="primary"
+                  sx={{ marginRight: "0" }}
+                  checked={isChecked}
+                  onChange={handleCheckboxChange}
+                />
+              }
               label="من را بخاطر بسپار"
-              sx={{ flexDirection: "row", textAlign: "right", direction:"rtl", marginRight: "0" }}
+              sx={{
+                flexDirection: "row",
+                textAlign: "right",
+                direction: "rtl",
+                marginRight: "0",
+              }}
             />
             <Button
               type="submit"

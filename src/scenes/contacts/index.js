@@ -7,6 +7,7 @@ import { useTheme } from "@mui/material";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
+import * as React from "react";
 
 import CustomSidebar from "../global/SideBar";
 import Topbar from "../global/TopBar";
@@ -20,6 +21,16 @@ const Contacts = () => {
   const [staffList, setStaffList] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+
+
+
+  const getRowStyle = React.useCallback((params) => {
+    const evenColor = "#f0f0f0";
+    const oddColor = "#ffffff";
+    const isEvenRow = params.index % 2 === 0;
+
+    return { background: isEvenRow ? evenColor : oddColor };
+  }, []);
 
   useEffect(() => {
     const date = new Date();
@@ -140,6 +151,8 @@ const Contacts = () => {
               rows={mockDataContacts}
               columns={columns}
               components={{ Toolbar: GridToolbar }}
+              getRowId={(row) => row.id}
+              getRowStyle={getRowStyle}
             />
           </Box>
         </Box>

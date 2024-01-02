@@ -9,5 +9,7 @@ const ticketCountURL = "http://127.0.0.1:8000/api/ticket-status-count/";
 const staffListURL = "http://127.0.0.1:8000/api/stafflist/";
 const kbURL = "http://127.0.0.1:8000/api/knowledgebase/";
 const kbCategoriesURL = "http://127.0.0.1:8000/api/knowledgebase/";
+const departmentListURL = "http://localhost:8000/api/department/";
+const sectionListURL = "http://localhost:8000/api/sections/?DepId=";
 
-export { baseURL, loginURL, departmentURL, userProfileURL, ticketURL, ticketCountURL, staffListURL, recentTicketURL, kbURL, kbCategoriesURL };
+export { baseURL, loginURL, departmentURL, userProfileURL, ticketURL, ticketCountURL, staffListURL, recentTicketURL, kbURL, kbCategoriesURL, departmentListURL, sectionListURL };

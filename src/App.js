@@ -4,15 +4,15 @@ import "./index.css";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
 import { useEffect, useState } from "react";
+import { Routes, Route } from "react-router-dom";
 
 import Login from "./scenes/login";
 import Dashboard from "./scenes/dashboard";
 import Ticket from "./scenes/ticket";
 import Contacts from "./scenes/contacts";
-import { Routes, Route } from "react-router-dom";
-
-
 import FAQ from "./scenes/faq";
+import UserProfile from "./scenes/userPanel/userPanel";
+import ChangePasswordPage from "./scenes/userPanel/changePswd";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -43,6 +43,8 @@ function App() {
             <Route path="/faq" element={<FAQ />} />
             <Route path="/login" element={<Login />} />
             <Route path="/contacts" element={< Contacts />} />
+            <Route path="/user-profile" element={<UserProfile/>} />
+            <Route path="/change-password" element={<ChangePasswordPage/>}/>
           </Routes>
         </main>
       </div>

@@ -66,11 +66,18 @@ const FAQ = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch(kbCategoriesURL); 
+        const response = await fetch(kbCategoriesURL, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: localStorage.getItem("accessToken"),
+          },
+        });
         if (!response.ok) {
           throw new Error(`Failed to fetch categories: ${response.statusText}`);
         }
         const data = await response.json();
+        console.log(data);
         setCategories(data);
       } catch (error) {
         console.error(error);
@@ -96,7 +103,7 @@ const FAQ = () => {
 
         <Box m="20px">
           <Header title="پایگاه دانش" subtitle="سوالات متداول" />
-          <div>
+          {/* <div>
             <Typography variant="h6">فیلتر :</Typography>
             <Select
               value={selectedCategory}
@@ -109,11 +116,11 @@ const FAQ = () => {
                 </MenuItem>
               ))}
             </Select>
-          </div>
+          </div> */}
           {kbArray
-            .filter(
-              (kb) => !selectedCategory || kb.category === selectedCategory
-            )
+            // .filter(
+            //   (kb) => !selectedCategory || kb.category === selectedCategory
+            // )
             .map((kb, index) => (
               <>
                 <Accordion key={index} defaultExpanded>
@@ -127,9 +134,9 @@ const FAQ = () => {
                           {kb.title}
                         </Typography>
                       )}
-                      {kb.author && (
+                      {kb.author["username"] && (
                         <Typography color={colors.blueAccent[300]} variant="h6">
-                          {kb.author}
+                          {kb.author["username"]}
                         </Typography>
                       )}
                     </Box>

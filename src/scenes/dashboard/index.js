@@ -1,6 +1,22 @@
-import { Box, Button, IconButton, Typography, useTheme } from "@mui/material";
+import {
+  Box,
+  Button,
+  IconButton,
+  Typography,
+  useTheme,
+  Card,
+  Grid,
+  CardContent,
+} from "@mui/material";
 import { tokens } from "../../theme";
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import TimelapseIcon from "@mui/icons-material/Timelapse";
+
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import BeenhereIcon from "@mui/icons-material/Beenhere";
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+
 import Header from "../../components/header";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { CircularProgressbar } from "react-circular-progressbar";
@@ -94,36 +110,6 @@ const Dashboard = () => {
     fetchRecentTicket();
   }, []);
 
-  const columns = [
-    { field: "id", headerName: "ID", flex: 0.5 },
-    {
-      field: "submitted_by",
-      headerName: "ارسال کننده",
-      flex: 1,
-      cellClassName: "name-column--cell",
-    },
-    {
-      field: "priority",
-      headerName: "اولویت",
-      headerAlign: "left",
-      align: "left",
-    },
-    {
-      field: "time_spent",
-      headerName: "زمان",
-      flex: 1,
-    },
-    {
-      field: "subject",
-      headerName: "موضوع",
-      flex: 1,
-    },
-    {
-      field: "description",
-      headerName: "توضیحات",
-      flex: 1,
-    },
-  ];
   return (
     <div className="pageContainer">
       <CustomSidebar isSidebar={isSidebar} texAlign="right" />
@@ -157,7 +143,183 @@ const Dashboard = () => {
               },
             }}
           >
+            <Box className="gridBox">
+              <Grid container className="gridContainer">
+                {/* //spacing={28}> */}
+                {/* Open Tickets */}
+                <Grid item>
+                  {/* //xs={12} sm={6} md={2}> */}
+                  <Card  className="cardStyle" style={{ backgroundColor: "red", width: `calc(33.33% - 20px)` }}>
+                    <CardContent className="cardContent">
+                      <AddCircleOutlineIcon className="iconStyle" />
+                      <Typography variant="h5" color="white" textAlign="center">
+                        تیکت های باز:{" "}
+                        {ticketCount.find((item) => item.status === "Open")
+                          ?.count || 0}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+
+                {/* In Progress Tickets */}
+                <Grid item>
+                  <Card style={{ backgroundColor: "brown" }}>
+                    <CardContent className="cardContent">
+                      <TimelapseIcon
+                        style={{
+                          fontSize: 60,
+                          color: "white",
+                          position: "absolute",
+                          bottom: 0,
+                          left: 0,
+                        }}
+                      />
+                      <Typography variant="h5" color="white" textAlign="center">
+                        تیکت های در دست بررسی:{" "}
+                        {ticketCount.find(
+                          (item) => item.status === "InProgress"
+                        )?.count || 0}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+
+                {/* On Hold Tickets */}
+                <Grid item>
+                  <Card
+                    className="cardStyle"
+                    style={{ backgroundColor: "orange" }}
+                  >
+                    <CardContent>
+                      <BeenhereIcon
+                        style={{
+                          fontSize: 60,
+                          color: "white",
+                          position: "absolute",
+                          bottom: 0,
+                          left: 0,
+                        }}
+                      />
+                      <Typography variant="h5" color="white" textAlign="center">
+                        تیکت های در انتظار بررسی:{" "}
+                        {ticketCount.find((item) => item.status === "OnHold")
+                          ?.count || 0}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+
+                {/* Resolved Tickets */}
+                <Grid item>
+                  <Card
+                    className="cardStyle"
+                    style={{ backgroundColor: "purple" }}
+                  >
+                    <CardContent>
+                      <CheckCircleOutlineIcon
+                        style={{
+                          fontSize: 60,
+                          color: "white",
+                          position: "absolute",
+                          bottom: 0,
+                          left: 0,
+                        }}
+                      />
+                      <Typography variant="h5" color="white" textAlign="center">
+                        تیکت های بررسی شده:{" "}
+                        {ticketCount.find((item) => item.status === "Resolved")
+                          ?.count || 0}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+
+                {/* Closed Tickets */}
+                <Grid item>
+                  <Card
+                    className="cardStyle"
+                    style={{ backgroundColor: "green" }}
+                  >
+                    <CardContent>
+                      <HighlightOffIcon
+                        style={{
+                          fontSize: 60,
+                          color: "white",
+                          position: "absolute",
+                          bottom: 0,
+                          left: 0,
+                        }}
+                      />
+                      <Typography variant="h5" color="white" textAlign="center">
+                        تیکت های بسته شده:{" "}
+                        {ticketCount.find((item) => item.status === "Closed")
+                          ?.count || 0}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              </Grid>
+            </Box>
+
             <Box
+              gridColumn="span 4"
+              gridRow="span 2"
+              backgroundColor={colors.primary[400]}
+              overflow="auto"
+            >
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                borderBottom={`4px solid ${colors.primary[500]}`}
+                colors={colors.grey[100]}
+                p="15px"
+              >
+                <Typography
+                  color={colors.grey[100]}
+                  variant="h5"
+                  fontWeight="600"
+                >
+                  Recent Transactions
+                </Typography>
+              </Box>
+              {recentTicket.map((ticket, i) => (
+                <Box
+                  key={`${ticket.id}-${i}`}
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  borderBottom={`4px solid ${colors.primary[500]}`}
+                  p="15px"
+                >
+                  <Box>
+                    <Typography
+                      color={colors.greenAccent[500]}
+                      variant="h5"
+                      fontWeight="600"
+                    >
+                      {ticket.priority}
+                    </Typography>
+                    <Typography color={colors.grey[100]}>
+                      {ticket.subject}
+                    </Typography>
+                  </Box>
+                  <div
+                    color={colors.grey[100]}
+                    dangerouslySetInnerHTML={{ __html: ticket.description }}
+                  ></div>
+                  <Box
+                    backgroundColor={colors.greenAccent[500]}
+                    p="5px 10px"
+                    borderRadius="4px"
+                  >
+                    ${ticket.time_spent}
+                  </Box>
+                </Box>
+              ))}
+            </Box>
+
+            {/* <Box
               className="recentTicketParentBox"
               backgroundColor={colors.primary[1000]}
             >
@@ -165,102 +327,9 @@ const Dashboard = () => {
                 className="recentTicketBox2"
                 backgroundColor={colors.primary[1000]}
               >
-                <Header title="تیکت های اخیر" />
-                <Box
-                  m="40px 10 0 0"
-                  height="60vh"
-                  sx={{
-                    "& .MuiDataGrid-root": {
-                      border: "none",
-                    },
-                    "& .MuiDataGrid-cell": {
-                      borderBottom: "none",
-                    },
-                    "& .name-column--cell": {
-                      color: colors.greenAccent[300],
-                    },
-                    "& .MuiDataGrid-columnHeaders": {
-                      backgroundColor: colors.blueAccent[1000],
-                      borderBottom: "none",
-                    },
-                    "& .MuiDataGrid-virtualScroller": {
-                      backgroundColor: colors.grey[900],
-                    },
-                    "& .MuiDataGrid-footerContainer": {
-                      borderTop: "none",
-                      backgroundColor: colors.blueAccent[1000],
-                    },
-                    "& .MuiCheckbox-root": {
-                      color: `${colors.greenAccent[200]} !important`,
-                    },
-                    "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-                      color: `${colors.grey[500]} !important`,
-                    },
-                  }}
-                >
-                  <DataGrid
-                    rows={recentTicket}
-                    columns={columns}
-                    components={{ Toolbar: GridToolbar }}
-                  />
-                </Box>
+               
               </Box>
-            </Box>
-
-            <Box
-              className="chartContainer"
-              backgroundColor={colors.primary[1000]}
-            >
-              <Typography
-                variant="h5"
-                className="chartText"
-                marginTop="10px"
-                marginRight="10px"
-              >
-                نمودار وضعیت تیکت ها
-              </Typography>
-              <Box
-                display="grid"
-                flexDirection="column"
-                alignItems="center"
-                justifyContent="center"
-                overflow="auto"
-                flex="1"
-              >
-                <div>
-                  <div className="circularbar">
-                    <CircularProgressbar value={50} text={`${50}%`} />
-                  </div>
-                  <div>
-                    <Typography variant="h5" color="red" textAlign="center">
-                      تیکت های باز :{" "}
-                      {ticketCount.find((item) => item.status === "Open")
-                        ?.count || 0}
-                    </Typography>
-                    <Typography variant="h5" color="purple" textAlign="center">
-                      تیکت های در دست بررسی :{" "}
-                      {ticketCount.find((item) => item.status === "InProgress")
-                        ?.count || 0}
-                    </Typography>
-                    <Typography variant="h5" color="blue" textAlign="center">
-                      تیکت های در انتظار بررسی :{" "}
-                      {ticketCount.find((item) => item.status === "OnHold")
-                        ?.count || 0}
-                    </Typography>
-                    <Typography variant="h5" color="grey" textAlign="center">
-                      تیکت های بررسی شده :{" "}
-                      {ticketCount.find((item) => item.status === "Resolved")
-                        ?.count || 0}
-                    </Typography>
-                    <Typography variant="h5" color="green" textAlign="center">
-                      تیکت های بسته شده :{" "}
-                      {ticketCount.find((item) => item.status === "Closed")
-                        ?.count || 0}
-                    </Typography>
-                  </div>
-                </div>
-              </Box>
-            </Box>
+            </Box> */}
           </Box>
         </Box>
       </div>
