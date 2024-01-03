@@ -1,3 +1,4 @@
+import React, { useEffect, useState, useRef } from "react";
 import {
   Box,
   Button,
@@ -7,7 +8,10 @@ import {
   Card,
   Grid,
   CardContent,
+  Tooltip,
 } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import { tokens } from "../../theme";
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
@@ -18,19 +22,30 @@ import BeenhereIcon from "@mui/icons-material/Beenhere";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 
 import Header from "../../components/header";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-
+import TicketDetailsModal from "../../components/Modal/ticketView";
 import "./dashboard.css";
 import "../../App.css";
 
-import * as React from "react";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+
 import CustomSidebar from "../global/SideBar";
 import Topbar from "../global/TopBar";
 import { ticketCountURL, recentTicketURL } from "../api/axios";
+import RecentTicketsGrid from "./recentTicket";
+
+const mapPriorityToPersian = (priority) => {
+  switch (priority) {
+    case "high":
+      return "زیاد";
+    case "medium":
+      return "متوسط";
+    case "low":
+      return "کم";
+    default:
+      return priority;
+  }
+};
 
 const Dashboard = () => {
   const theme = useTheme();
@@ -40,6 +55,20 @@ const Dashboard = () => {
   const [recentTicket, setRecentTicket] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+
+  const [selectedTicket, setSelectedTicket] = useState(null);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+
+  const handleViewDetails = (ticket) => {
+    setSelectedTicket(ticket);
+    setIsDetailsModalOpen(true);
+  };
+
+  const handleCloseDetailsModal = () => {
+    setSelectedTicket(null);
+    setIsDetailsModalOpen(false);
+  };
+  const handleModifyAnswer = () => {};
 
   useEffect(() => {
     const date = new Date();
@@ -148,12 +177,16 @@ const Dashboard = () => {
                 {/* //spacing={28}> */}
                 {/* Open Tickets */}
                 <Grid item>
-                  {/* //xs={12} sm={6} md={2}> */}
-                  <Card  className="cardStyle" style={{ backgroundColor: "red", width: `calc(33.33% - 20px)` }}>
+                  <Card
+                    style={{ backgroundColor: "#d70000" }}
+                    className="cardStyle"
+                  >
                     <CardContent className="cardContent">
                       <AddCircleOutlineIcon className="iconStyle" />
                       <Typography variant="h5" color="white" textAlign="center">
-                        تیکت های باز:{" "}
+                        تیکت های باز
+                        <br />
+                        <br />
                         {ticketCount.find((item) => item.status === "Open")
                           ?.count || 0}
                       </Typography>
@@ -163,19 +196,16 @@ const Dashboard = () => {
 
                 {/* In Progress Tickets */}
                 <Grid item>
-                  <Card style={{ backgroundColor: "brown" }}>
+                  <Card
+                    style={{ backgroundColor: "#FC6600" }} ///"#964b11" }}
+                    className="cardStyle"
+                  >
                     <CardContent className="cardContent">
-                      <TimelapseIcon
-                        style={{
-                          fontSize: 60,
-                          color: "white",
-                          position: "absolute",
-                          bottom: 0,
-                          left: 0,
-                        }}
-                      />
+                      <TimelapseIcon className="iconStyle" />
                       <Typography variant="h5" color="white" textAlign="center">
-                        تیکت های در دست بررسی:{" "}
+                        تیکت های در دست بررسی
+                        <br />
+                        <br />{" "}
                         {ticketCount.find(
                           (item) => item.status === "InProgress"
                         )?.count || 0}
@@ -188,20 +218,14 @@ const Dashboard = () => {
                 <Grid item>
                   <Card
                     className="cardStyle"
-                    style={{ backgroundColor: "orange" }}
+                    style={{ backgroundColor: "#FFCD25" }} //"#orange" }}
                   >
-                    <CardContent>
-                      <BeenhereIcon
-                        style={{
-                          fontSize: 60,
-                          color: "white",
-                          position: "absolute",
-                          bottom: 0,
-                          left: 0,
-                        }}
-                      />
+                    <CardContent className="cardContent">
+                      <CheckCircleOutlineIcon className="iconStyle" />
                       <Typography variant="h5" color="white" textAlign="center">
-                        تیکت های در انتظار بررسی:{" "}
+                        تیکت های در انتظار بررسی
+                        <br />
+                        <br />{" "}
                         {ticketCount.find((item) => item.status === "OnHold")
                           ?.count || 0}
                       </Typography>
@@ -213,20 +237,14 @@ const Dashboard = () => {
                 <Grid item>
                   <Card
                     className="cardStyle"
-                    style={{ backgroundColor: "purple" }}
+                    style={{ backgroundColor: "#8A2BE2" }}
                   >
-                    <CardContent>
-                      <CheckCircleOutlineIcon
-                        style={{
-                          fontSize: 60,
-                          color: "white",
-                          position: "absolute",
-                          bottom: 0,
-                          left: 0,
-                        }}
-                      />
+                    <CardContent className="cardContent">
+                      <BeenhereIcon className="iconStyle" />
                       <Typography variant="h5" color="white" textAlign="center">
-                        تیکت های بررسی شده:{" "}
+                        تیکت های بررسی شده
+                        <br />
+                        <br />{" "}
                         {ticketCount.find((item) => item.status === "Resolved")
                           ?.count || 0}
                       </Typography>
@@ -238,20 +256,14 @@ const Dashboard = () => {
                 <Grid item>
                   <Card
                     className="cardStyle"
-                    style={{ backgroundColor: "green" }}
+                    style={{ backgroundColor: "#229B11" }}
                   >
-                    <CardContent>
-                      <HighlightOffIcon
-                        style={{
-                          fontSize: 60,
-                          color: "white",
-                          position: "absolute",
-                          bottom: 0,
-                          left: 0,
-                        }}
-                      />
+                    <CardContent className="cardContent">
+                      <HighlightOffIcon className="iconStyle" />
                       <Typography variant="h5" color="white" textAlign="center">
-                        تیکت های بسته شده:{" "}
+                        تیکت های بسته
+                        <br />
+                        <br />{" "}
                         {ticketCount.find((item) => item.status === "Closed")
                           ?.count || 0}
                       </Typography>
@@ -261,53 +273,50 @@ const Dashboard = () => {
               </Grid>
             </Box>
 
+            <RecentTicketsGrid
+              recentTicket={recentTicket}
+              handleViewDetails={handleViewDetails}
+              handleModifyAnswer={handleModifyAnswer}
+              mapPriorityToPersian={mapPriorityToPersian}
+              colors={colors}
+            />
             <Box
-              gridColumn="span 4"
-              gridRow="span 2"
+              className="recentTicketParentBox"
               backgroundColor={colors.primary[400]}
-              overflow="auto"
             >
               <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
+                className="recentTicketBox3 "
                 borderBottom={`4px solid ${colors.primary[500]}`}
                 colors={colors.grey[100]}
-                p="15px"
               >
                 <Typography
                   color={colors.grey[100]}
                   variant="h5"
                   fontWeight="600"
                 >
-                  Recent Transactions
+                  تیکت های اخیر
                 </Typography>
               </Box>
               {recentTicket.map((ticket, i) => (
                 <Box
                   key={`${ticket.id}-${i}`}
-                  display="flex"
-                  justifyContent="space-between"
-                  alignItems="center"
                   borderBottom={`4px solid ${colors.primary[500]}`}
-                  p="15px"
+                  className="recentTicket"
                 >
+                  <Box>
+                    <Typography color={colors.grey[100]}>
+                      {ticket.subject}
+                    </Typography>
+                  </Box>
                   <Box>
                     <Typography
                       color={colors.greenAccent[500]}
                       variant="h5"
                       fontWeight="600"
                     >
-                      {ticket.priority}
-                    </Typography>
-                    <Typography color={colors.grey[100]}>
-                      {ticket.subject}
+                      {mapPriorityToPersian(ticket.priority)}
                     </Typography>
                   </Box>
-                  <div
-                    color={colors.grey[100]}
-                    dangerouslySetInnerHTML={{ __html: ticket.description }}
-                  ></div>
                   <Box
                     backgroundColor={colors.greenAccent[500]}
                     p="5px 10px"
@@ -315,21 +324,39 @@ const Dashboard = () => {
                   >
                     ${ticket.time_spent}
                   </Box>
+
+                  <Box>
+                    {/* Button to view ticket details */}
+                    <Tooltip title="View Details">
+                      <IconButton
+                        size="small"
+                        color="primary"
+                        onClick={() => handleViewDetails(ticket)}
+                      >
+                        <VisibilityIcon />
+                      </IconButton>
+                    </Tooltip>
+                    {/* Button to modify/answer ticket */}
+                    <Tooltip title="Modify/Answer">
+                      <IconButton
+                        size="small"
+                        color="primary"
+                        onClick={() => handleModifyAnswer(ticket)}
+                      >
+                        <EditIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
                 </Box>
               ))}
+              {selectedTicket && (
+                <TicketDetailsModal
+                  open={isDetailsModalOpen}
+                  handleClose={handleCloseDetailsModal}
+                  ticket={selectedTicket}
+                />
+              )}
             </Box>
-
-            {/* <Box
-              className="recentTicketParentBox"
-              backgroundColor={colors.primary[1000]}
-            >
-              <Box
-                className="recentTicketBox2"
-                backgroundColor={colors.primary[1000]}
-              >
-               
-              </Box>
-            </Box> */}
           </Box>
         </Box>
       </div>

@@ -1,4 +1,11 @@
-import { Box, Button, TextField, colors, useTheme } from "@mui/material";
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  colors,
+  useTheme,
+} from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -12,7 +19,12 @@ import "./ticket.css";
 import { useNavigate } from "react-router-dom";
 import CustomSidebar from "../global/SideBar";
 import Topbar from "../global/TopBar";
-import { departmentListURL, sectionListURL, ticketURL } from "../api/axios";
+import {
+  departmentListURL,
+  sectionListURL,
+  ticketURL,
+  userProfileURL,
+} from "../api/axios";
 
 const Ticket = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -76,7 +88,6 @@ const Ticket = () => {
   }, [selectedDepartment]);
 
   const handleFormSubmit = async (values) => {
-
     try {
       const response = await fetch(ticketURL, {
         method: "POST",
@@ -111,6 +122,7 @@ const Ticket = () => {
 
   const [isSidebar, setIsSidebar] = useState(true);
   const navigate = useNavigate();
+  const [profile, setProfile] = useState({});
 
   useEffect(() => {
     const date = new Date();
@@ -123,6 +135,34 @@ const Ticket = () => {
     }
   }, [localStorage]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(userProfileURL, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: localStorage.getItem("accessToken"),
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(
+            `Failed to fetch User Profile: ${
+              response.statusText
+            } ${localStorage.getItem("accessToken")}`
+          );
+        }
+        const data = await response.json();
+        setProfile(data[0]);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
+  }, [localStorage]);
+
   return (
     <div className="pageContainer">
       <CustomSidebar isSidebar={isSidebar} texAlign="right" />
@@ -130,7 +170,7 @@ const Ticket = () => {
         <Topbar setIsSidebar={setIsSidebar} />
 
         <Box m="20px" direction="rtl">
-          <Header title="ایجاد تیکت جدید" />
+          <Header title="اطلاعات تیکت " />
 
           <Formik
             onSubmit={handleFormSubmit}
@@ -157,28 +197,28 @@ const Ticket = () => {
                     direction: "rtl",
                   }}
                 >
-                  <TextField
-                    fullWidth
-                    variant="filled"
-                    type="text"
-                    placeholder="موضوع"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.subject}
-                    name="subject"
-                    error={!!touched.subject && !!errors.subject}
-                    helperText={touched.subject && errors.subject}
-                    sx={{ gridColumn: "span 2", direction: "rtl" }}
-                  />
+                  <Box >
+                  <Box sx={{ flex: 1, flexDirection: "row"}}>
+                    <Typography>نام </Typography>
+                    <TextField
+                      fullWidth
+                      variant="filled"
+                      type="text"
+                      disabled
+                      value={profile.name}
+                      name="name"
+                      sx={{ gridColumn: "span 2", direction: "rtl" }}
+                    />
+                  </Box>
 
                   <Box
                     sx={{
                       display: "grid",
                       gridTemplateColumns: "repeat(3, 1fr)",
-                      gridColumn: "span 6",
-                      gap: "10px",
-                      width: "100%",
-                      paddingBottom: "10px",
+                      gridColumn: "span 3",
+                      gap: "35px",
+                      width: "430%",
+                      paddingBottom: "15px",
                     }}
                   >
                     <Box>
@@ -256,27 +296,42 @@ const Ticket = () => {
                     </Box>
                   </Box>
                 </Box>
-
-                <ReactQuill
-                  theme="snow"
-                  onChange={setValue}
-                  value={value}
-                  placeholder="شرح مساله"
-                />
+                </Box>
+                <Box>
+                  <TextField
+                    fullWidth
+                    variant="filled"
+                    type="text"
+                    placeholder="موضوع"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.subject}
+                    name="subject"
+                    error={!!touched.subject && !!errors.subject}
+                    helperText={touched.subject && errors.subject}
+                    sx={{ gridColumn: "span 2", direction: "rtl" , paddingBottom: "10px",}}
+                  />
+                  <ReactQuill
+                    theme="snow"
+                    onChange={setValue}
+                    value={value}
+                    placeholder="شرح مساله"
+                  />
+                </Box>
 
                 <Box mt="20px" display="flex">
-                <Button
-                  type="submit"
-                  color="secondary"
-                  variant="contained"
-                  sx={{
-                    fontSize: "h3",
-                    fontWeight: "bold",
-                    padding: "15px 20px",
-                  }}
-                >
-                  انتخاب فایل
-                </Button>
+                  <Button
+                    type="submit"
+                    color="secondary"
+                    variant="contained"
+                    sx={{
+                      fontSize: "h3",
+                      fontWeight: "bold",
+                      padding: "15px 20px",
+                    }}
+                  >
+                    انتخاب فایل
+                  </Button>
                 </Box>
 
                 <Box
