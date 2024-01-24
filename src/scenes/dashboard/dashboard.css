@@ -142,3 +142,70 @@
   transform: scale(1.1);
   font-size: 60px !important; /* Add !important to override other rules */
 }
+
+
+
+/* RecentTicketsDashboard.css */
+
+.recent-tickets-dashboard {
+  font-family: 'Arial', sans-serif;
+  padding: 20px;
+  margin: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.tickets-frame {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.tickets-header {
+  display: flex;
+  background-color: #140e0e;
+  padding: 10px;
+  font-weight: bold;
+}
+
+.ticket-row {
+  display: flex;
+  cursor: pointer;
+  padding: 10px;
+  transition: background-color 0.3s;
+}
+
+.ticket-row:hover {
+  background-color: #e6f7ff;
+}
+
+.tickets-footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+select {
+  margin-left: 5px;
+  padding: 5px;
+}
+
+button {
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}

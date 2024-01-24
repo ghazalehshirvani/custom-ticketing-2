@@ -65,7 +65,10 @@ const CustomSidebar = () => {
           );
         }
         const data = await response.json();
-        setProfile(data[0]);
+        console.log("loginnnn");
+        console.log(data["results"][0]);
+       
+        setProfile(data["results"][0]);
       } catch (error) {
         console.error(error);
       }
@@ -151,11 +154,11 @@ const CustomSidebar = () => {
                   fontWeight="bold"
                   sx={{ m: "10px 0 20px 0" }}
                 >
-                  {profile.name}
+                  {profile["name"]}
                 </Typography>
                 <Typography variant="h6" color={colors.grey[200]}>
                   {/* {""#2A2E36"}> "} */}
-                  {profile.job_position}
+                  {profile["job_position"]}
                 </Typography>
               </Box>
             </Box>

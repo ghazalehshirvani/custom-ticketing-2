@@ -1,0 +1,76 @@
+/* recentTicketsGrid.css */
+
+.recentTicketParentBox {
+    border-radius: 6px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 10px;
+    padding: 10px;
+  }
+  
+  .recentTicketBox3 {
+    border-bottom: 4px solid #1F2A40;
+    color: #141414!important;
+    margin-bottom: 20px;
+  }
+  
+  .recentTicketPaper {
+    cursor: pointer;
+    background-color: #5678cff9;
+    transition: background-color 0.3s ease;
+    margin-bottom: 15px;
+    padding: 15px;
+    border-radius: 8px;
+  }
+  
+  .recentTicketPaper:hover {
+    background-color: #6f9af01b;
+  }
+  
+  .recentTicketPaper h6 {
+    font-weight: 600;
+  }
+  
+  .recentTicketPagination {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .recentTicketPagination button {
+    color: #04C1CF;
+  }
+  
+  .recentTicketPagination .Mui-selected {
+    background-color: #04C1CF;
+    color: #fff;
+  }
+  
+
+  .tickets-container {
+    width: 80%;
+    margin: 0 auto;
+    background-color: #f3f3f3;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .ticket {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e1e4e8;
+    padding: 10px 0;
+  }
+  
+  .ticket-time,
+  .ticket-date,
+  .ticket-number,
+  .ticket-description {
+    flex-basis: 20%;
+  }
+  
+  .ticket-description {
+    flex-basis: 40%; /* Assuming description may need more space */
+  }
+
+  

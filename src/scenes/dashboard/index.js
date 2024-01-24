@@ -10,29 +10,25 @@ import {
   CardContent,
   Tooltip,
 } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import VisibilityIcon from "@mui/icons-material/Visibility";
+
 import { tokens } from "../../theme";
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import TimelapseIcon from "@mui/icons-material/Timelapse";
-
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-import BeenhereIcon from "@mui/icons-material/Beenhere";
-import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 
 import Header from "../../components/header";
 import "react-circular-progressbar/dist/styles.css";
 import TicketDetailsModal from "../../components/Modal/ticketView";
 import "./dashboard.css";
 import "../../App.css";
-
+import OpenTicketCard from "../../components/Modal/cardDesign";
 import { useNavigate } from "react-router-dom";
 
 import CustomSidebar from "../global/SideBar";
 import Topbar from "../global/TopBar";
-import { ticketCountURL, recentTicketURL } from "../api/axios";
-import RecentTicketsGrid from "./recentTicket";
+import { ticketCountURL, recentTicketURL, ticketURL } from "../api/axios";
+import RecentTicketsGrid from "./recentTicketsView";
+import CardItem from "../../components/Modal/cardItem";
+// import TicketsTable from "./recentTicketsView";
+import RecentTicketsDashboard from "./recentTicketsView";
 
 const mapPriorityToPersian = (priority) => {
   switch (priority) {
@@ -84,7 +80,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchTicketCount = async () => {
       try {
-        const response = await fetch(ticketCountURL, {
+        const response = await fetch(ticketURL, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -99,7 +95,9 @@ const Dashboard = () => {
         }
 
         const data = await response.json();
-        setTicketCount(data);
+        console.log("ticket count");
+        console.log(data["count"]);
+        setTicketCount(data["count"]);
         setLoading(false);
       } catch (error) {
         console.error(error);
@@ -128,7 +126,7 @@ const Dashboard = () => {
         }
 
         const data = await response.json();
-        setRecentTicket(data);
+        setRecentTicket(data["results"]);
         setLoading(false);
       } catch (error) {
         console.error(error);
@@ -174,188 +172,59 @@ const Dashboard = () => {
           >
             <Box className="gridBox">
               <Grid container className="gridContainer">
-                {/* //spacing={28}> */}
-                {/* Open Tickets */}
-                <Grid item>
-                  <Card
-                    style={{ backgroundColor: "#d70000" }}
-                    className="cardStyle"
-                  >
-                    <CardContent className="cardContent">
-                      <AddCircleOutlineIcon className="iconStyle" />
-                      <Typography variant="h5" color="white" textAlign="center">
-                        تیکت های باز
-                        <br />
-                        <br />
-                        {ticketCount.find((item) => item.status === "Open")
-                          ?.count || 0}
-                      </Typography>
-                    </CardContent>
-                  </Card>
-                </Grid>
+                <OpenTicketCard
+                  backgroundColor="#d70000"
+                  status="Open"
+                  count={
+                    recentTicket.find((item) => item.status === "Open")?.count
+                  }
+                />
+                {/* Render individual cards using the CardItem component */}
 
-                {/* In Progress Tickets */}
-                <Grid item>
-                  <Card
-                    style={{ backgroundColor: "#FC6600" }} ///"#964b11" }}
-                    className="cardStyle"
-                  >
-                    <CardContent className="cardContent">
-                      <TimelapseIcon className="iconStyle" />
-                      <Typography variant="h5" color="white" textAlign="center">
-                        تیکت های در دست بررسی
-                        <br />
-                        <br />{" "}
-                        {ticketCount.find(
-                          (item) => item.status === "InProgress"
-                        )?.count || 0}
-                      </Typography>
-                    </CardContent>
-                  </Card>
-                </Grid>
-
-                {/* On Hold Tickets */}
-                <Grid item>
-                  <Card
-                    className="cardStyle"
-                    style={{ backgroundColor: "#FFCD25" }} //"#orange" }}
-                  >
-                    <CardContent className="cardContent">
-                      <CheckCircleOutlineIcon className="iconStyle" />
-                      <Typography variant="h5" color="white" textAlign="center">
-                        تیکت های در انتظار بررسی
-                        <br />
-                        <br />{" "}
-                        {ticketCount.find((item) => item.status === "OnHold")
-                          ?.count || 0}
-                      </Typography>
-                    </CardContent>
-                  </Card>
-                </Grid>
-
-                {/* Resolved Tickets */}
-                <Grid item>
-                  <Card
-                    className="cardStyle"
-                    style={{ backgroundColor: "#8A2BE2" }}
-                  >
-                    <CardContent className="cardContent">
-                      <BeenhereIcon className="iconStyle" />
-                      <Typography variant="h5" color="white" textAlign="center">
-                        تیکت های بررسی شده
-                        <br />
-                        <br />{" "}
-                        {ticketCount.find((item) => item.status === "Resolved")
-                          ?.count || 0}
-                      </Typography>
-                    </CardContent>
-                  </Card>
-                </Grid>
-
-                {/* Closed Tickets */}
-                <Grid item>
-                  <Card
-                    className="cardStyle"
-                    style={{ backgroundColor: "#229B11" }}
-                  >
-                    <CardContent className="cardContent">
-                      <HighlightOffIcon className="iconStyle" />
-                      <Typography variant="h5" color="white" textAlign="center">
-                        تیکت های بسته
-                        <br />
-                        <br />{" "}
-                        {ticketCount.find((item) => item.status === "Closed")
-                          ?.count || 0}
-                      </Typography>
-                    </CardContent>
-                  </Card>
-                </Grid>
+                <OpenTicketCard
+                  backgroundColor="#FC6600"
+                  status="InProgress"
+                  count={
+                    recentTicket.find((item) => item.status === "InProgress")
+                      ?.count
+                  }
+                />
+                <OpenTicketCard
+                  backgroundColor="#FFCD25"
+                  status="OnHold"
+                  count={
+                    recentTicket.find((item) => item.status === "OnHold")?.count
+                  }
+                />
+                <OpenTicketCard
+                  backgroundColor="#8A2BE2"
+                  status="Resolved"
+                  count={
+                    recentTicket.find((item) => item.status === "Resolved")
+                      ?.count
+                  }
+                />
+                <OpenTicketCard
+                  backgroundColor="#229B11"
+                  status="Closed"
+                  count={
+                    recentTicket.find((item) => item.status === "Closed")?.count
+                  }
+                />
               </Grid>
-            </Box>
 
-            <RecentTicketsGrid
+              <RecentTicketsGrid
               recentTicket={recentTicket}
               handleViewDetails={handleViewDetails}
               handleModifyAnswer={handleModifyAnswer}
               mapPriorityToPersian={mapPriorityToPersian}
+              selectedTicket={selectedTicket}
+              isDetailsModalOpen={isDetailsModalOpen}
+              handleCloseDetailsModal={handleCloseDetailsModal}
               colors={colors}
             />
-            <Box
-              className="recentTicketParentBox"
-              backgroundColor={colors.primary[400]}
-            >
-              <Box
-                className="recentTicketBox3 "
-                borderBottom={`4px solid ${colors.primary[500]}`}
-                colors={colors.grey[100]}
-              >
-                <Typography
-                  color={colors.grey[100]}
-                  variant="h5"
-                  fontWeight="600"
-                >
-                  تیکت های اخیر
-                </Typography>
-              </Box>
-              {recentTicket.map((ticket, i) => (
-                <Box
-                  key={`${ticket.id}-${i}`}
-                  borderBottom={`4px solid ${colors.primary[500]}`}
-                  className="recentTicket"
-                >
-                  <Box>
-                    <Typography color={colors.grey[100]}>
-                      {ticket.subject}
-                    </Typography>
-                  </Box>
-                  <Box>
-                    <Typography
-                      color={colors.greenAccent[500]}
-                      variant="h5"
-                      fontWeight="600"
-                    >
-                      {mapPriorityToPersian(ticket.priority)}
-                    </Typography>
-                  </Box>
-                  <Box
-                    backgroundColor={colors.greenAccent[500]}
-                    p="5px 10px"
-                    borderRadius="4px"
-                  >
-                    ${ticket.time_spent}
-                  </Box>
-
-                  <Box>
-                    {/* Button to view ticket details */}
-                    <Tooltip title="View Details">
-                      <IconButton
-                        size="small"
-                        color="primary"
-                        onClick={() => handleViewDetails(ticket)}
-                      >
-                        <VisibilityIcon />
-                      </IconButton>
-                    </Tooltip>
-                    {/* Button to modify/answer ticket */}
-                    <Tooltip title="Modify/Answer">
-                      <IconButton
-                        size="small"
-                        color="primary"
-                        onClick={() => handleModifyAnswer(ticket)}
-                      >
-                        <EditIcon />
-                      </IconButton>
-                    </Tooltip>
-                  </Box>
-                </Box>
-              ))}
-              {selectedTicket && (
-                <TicketDetailsModal
-                  open={isDetailsModalOpen}
-                  handleClose={handleCloseDetailsModal}
-                  ticket={selectedTicket}
-                />
-              )}
+            {/* <RecentTicketsGrid/> */}
+            {/* <TicketsTable/> */}
             </Box>
           </Box>
         </Box>

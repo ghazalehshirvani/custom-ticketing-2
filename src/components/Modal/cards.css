@@ -1,0 +1,48 @@
+
+.cardParent {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 215px;
+    background-color: white !important ;
+    text-align: center;
+    cursor: pointer;
+  }
+
+.cardContentt {
+    justify-content: center !important; 
+
+}
+
+.countTypography {
+    margin-top: 15px;
+    margin-bottom: 15px!important;
+    color: black !important;
+}
+.statusTypography{
+    align-self: center !important;
+    margin-bottom: -20px !important;
+ 
+}
+.cardParent:hover .statusIconStyle,
+.cardParent:hover .countTypography,
+.cardParent:hover .statusTypography,
+.cardParent:hover .detailsButton {
+  transform: scale(1.2);
+  transition: transform 0.3s ease-in-out;
+}
+
+.detailsButton:hover {
+    transform: scale(1.2);
+    transition: transform 0.3s ease-in-out;
+}
+.statusIconStyle {
+    height: 12vh;
+    transition: transform 0.3s ease-in-out;
+    
+  }
+.detailsButtonParent{
+    border-top: 1px solid #e0e0e0;
+    margin-bottom:0px;
+    background-color:whitesmoke;
+}

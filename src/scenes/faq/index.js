@@ -52,7 +52,7 @@ const FAQ = () => {
         }
 
         const data = await response.json();
-        setKbArray(data);
+        setKbArray(data["results"]);
         setLoading(false);
       } catch (error) {
         console.error(error);
@@ -77,8 +77,8 @@ const FAQ = () => {
           throw new Error(`Failed to fetch categories: ${response.statusText}`);
         }
         const data = await response.json();
-        console.log(data);
-        setCategories(data);
+        console.log(data["results"]);
+        setCategories(data["results"]);
       } catch (error) {
         console.error(error);
       }

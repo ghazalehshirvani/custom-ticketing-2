@@ -1,7 +1,6 @@
 import { Box } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
-import { mockDataContacts } from "../../data/mockData";
 import Header from "../../components/header";
 import { useTheme } from "@mui/material";
 import { useState, useEffect } from "react";
@@ -13,6 +12,12 @@ import CustomSidebar from "../global/SideBar";
 import Topbar from "../global/TopBar";
 import { staffListURL } from "../api/axios";
 
+function convertToPersianNumerals(phoneNumber) {
+  const persianNumerals = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+
+  return phoneNumber.replace(/\d/g, (digit) => persianNumerals[digit]);
+}
+
 const Contacts = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -21,7 +26,7 @@ const Contacts = () => {
   const [staffList, setStaffList] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-
+  let persianPhoneNumber ;
 
 
   const getRowStyle = React.useCallback((params) => {
@@ -45,12 +50,7 @@ const Contacts = () => {
 
   const columns = [
     { field: "id", headerName: "ID", flex: 0.5 },
-    {
-      field: "registrarId",
-      headerName: "شماره کاربری",
-      headerAlign: "center",
-      align: "center",
-    },
+  
     {
       field: "name",
       headerName: "نام",
@@ -71,6 +71,7 @@ const Contacts = () => {
       field: "phonenumber",
       headerAlign: "center",
       align: "center",
+      selfjustify: "left",
       headerName: "شماره تماس",
       flex: 1,
     },
@@ -81,6 +82,11 @@ const Contacts = () => {
       headerName: "عنوان شغلی",
       flex: 1,
     },
+    
+  ];
+  const rows = [
+    { id: staffList.id, name: staffList.name, pic_profile: staffList.pic_profile, phonenumber: persianPhoneNumber, job_position: staffList.job_position },
+    // Add more rows as needed
   ];
   useEffect(() => {
     const fetchStaffList = async () => {
@@ -98,8 +104,9 @@ const Contacts = () => {
         }
 
         const data = await response.json();
-        setStaffList(data);
+        setStaffList(data["results"]);
         setLoading(false);
+        persianPhoneNumber = convertToPersianNumerals(staffList.phonenumber);
       } catch (error) {
         console.error(error);
         setLoading(false);
@@ -148,7 +155,7 @@ const Contacts = () => {
             }}
           >
             <DataGrid
-              rows={mockDataContacts}
+              rows={staffList}
               columns={columns}
               components={{ Toolbar: GridToolbar }}
               getRowId={(row) => row.id}

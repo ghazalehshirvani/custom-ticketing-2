@@ -48,7 +48,7 @@ const Ticket = () => {
         if (res.ok) {
           const result = res.json();
           result.then((data) => {
-            setDepartmentList(data);
+            setDepartmentList(data["results"]);
           });
         } else {
           console.error("department fetching failed");
@@ -74,8 +74,8 @@ const Ticket = () => {
           if (res.ok) {
             const result = res.json();
             result.then((data) => {
-              console.log(data);
-              setSectionList(data);
+              console.log(data["results"]);
+              setSectionList(data["results"]);
             });
           } else {
             console.error("section fetching failed");
@@ -154,7 +154,7 @@ const Ticket = () => {
           );
         }
         const data = await response.json();
-        setProfile(data[0]);
+        setProfile(data["results"][0]);
       } catch (error) {
         console.error(error);
       }
@@ -205,7 +205,7 @@ const Ticket = () => {
                       variant="filled"
                       type="text"
                       disabled
-                      value={profile.name}
+                      value={profile["name"]}
                       name="name"
                       sx={{ gridColumn: "span 2", direction: "rtl" }}
                     />
@@ -237,10 +237,10 @@ const Ticket = () => {
                         {departmentList.map((department, i) => (
                           <MenuItem
                             key={i}
-                            value={department.id}
+                            value={department["id"]}
                             sx={{ direction: "rtl" }}
                           >
-                            {department.DepName}
+                            {department["DepName"]}
                           </MenuItem>
                         ))}
                       </Select>
@@ -261,10 +261,10 @@ const Ticket = () => {
                         {sectionList.map((section, i) => (
                           <MenuItem
                             key={i}
-                            value={section.id}
+                            value={section["id"]}
                             sx={{ direction: "rtl" }}
                           >
-                            {section.SectionName}
+                            {section["SectionName"]}
                           </MenuItem>
                         ))}
                       </Select>

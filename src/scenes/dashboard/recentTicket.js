@@ -1,17 +1,46 @@
 // RecentTicketsGrid.js
 import React from "react";
-import { Box, Grid, Typography, IconButton, Tooltip } from "@mui/material";
+import { Box, Grid, Typography, IconButton, Tooltip, Pagination } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
+import TicketDetailsModal from "../../components/Modal/ticketView";
 import "./dashboard.css";
+import { useState } from "react";
+import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
+
+const PAGE_SIZE = 5;
 
 const RecentTicketsGrid = ({
   recentTicket,
   handleViewDetails,
   handleModifyAnswer,
   mapPriorityToPersian,
-  colors,
+  selectedTicket,
+  isDetailsModalOpen,
+  handleCloseDetailsModal,
+  colors
 }) => {
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const totalPages = Math.ceil(recentTicket.length / PAGE_SIZE);
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+  };
+  const handleNextPage = () => {
+    setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages));
+  };
+
+  const handlePreviousPage = () => {
+    setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
+  };
+
+  const visibleTickets = recentTicket.slice(
+    (currentPage - 1) * PAGE_SIZE,
+    currentPage * PAGE_SIZE
+  );
+
   return (
     <Box
       className="recentTicketParentBox"
@@ -27,7 +56,7 @@ const RecentTicketsGrid = ({
           تیکت های اخیر
         </Typography>
       </Box>
-      {recentTicket.map((ticket, i) => (
+      {visibleTickets.map((ticket, i) => (
         <Grid
           container
           spacing={1}
@@ -85,10 +114,35 @@ const RecentTicketsGrid = ({
               </Tooltip>
             </Box>
           </Grid>
+          
         </Grid>
-      ))}
+        
+    ))}
+     {/* Pagination controls */}
+      {/* Next and Previous buttons */}
+      <Box textAlign="center" marginTop="20px">
+        <IconButton onClick={handlePreviousPage} disabled={currentPage === 1}>
+          <NavigateBeforeIcon />
+        </IconButton>
+        <Typography variant="h6" color="textSecondary" display="inline">
+          صفحه {currentPage} از {totalPages}
+        </Typography>
+        <IconButton onClick={handleNextPage} disabled={currentPage === totalPages}>
+          <NavigateNextIcon />
+        </IconButton>
+      </Box>
+      {selectedTicket && (
+        <TicketDetailsModal
+          open={isDetailsModalOpen}
+          handleClose={handleCloseDetailsModal}
+          ticket={selectedTicket}
+        />
+      )}
+      
     </Box>
   );
 };
 
 export default RecentTicketsGrid;
+
+
